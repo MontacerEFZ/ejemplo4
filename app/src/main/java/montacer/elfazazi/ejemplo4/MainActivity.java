@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void iniciarVista() {
     txtPassword = findViewById(R.id.txtPasswordMain);
-    txtEmail = findViewById(R.id.txtEmailMain);
+    txtEmail = findViewById(R.id.contenedor);
     btnDesencriptar = findViewById(R.id.btnDesencriptarMain);
     }
 }
