@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import montacer.elfazazi.ejemplo4.modelos.Usuario;
+
 public class DesencriptarActivity extends AppCompatActivity {
 
     @Override
@@ -17,8 +19,9 @@ public class DesencriptarActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         if (bundle != null){
-            String password = bundle.getString("PASS");
-            Toast.makeText(this, password, Toast.LENGTH_SHORT).show();
+           // String password = bundle.getString("PASS"); ya no hace falta, tenemos la clase usuaario
+            Usuario usuario = (Usuario) bundle.getSerializable("USER");
+            Toast.makeText(this, usuario.toString(), Toast.LENGTH_SHORT).show();
         }
     }
 }
