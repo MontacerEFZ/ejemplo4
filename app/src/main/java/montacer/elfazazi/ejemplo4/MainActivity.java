@@ -1,5 +1,6 @@
 package montacer.elfazazi.ejemplo4;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -7,13 +8,17 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import montacer.elfazazi.ejemplo4.modelos.Direccion;
 import montacer.elfazazi.ejemplo4.modelos.Usuario;
 
 public class MainActivity extends AppCompatActivity {
     private EditText txtPassword;
     private EditText txtEmail;
     private Button btnDesencriptar;
+    private Button btnCrearDireccion;
+    private final int DIRECCIONES = 123;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,11 +42,49 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent); //esto es como el coche para ir a la 2 actividad
             }
         });
+        btnCrearDireccion.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, CrearDireccionActivity.class  );
+                //empieza actividad y esperar resultado (respuesta)
+                startActivityForResult(intent, DIRECCIONES);
+            }
+        });
+    }
+
+    /**
+     * Se activa al retornar StartActivityForResult
+     * @param requestCode --> identificador de la ventana que se ha cerrado (tipo de dato q retorna)
+     * @param resultCode --> el modo en que se ha cerrado
+     * @param data --> datos retornados (intent con el bundle dentro)
+     */
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        //averiguar que actividad se cerro
+        if (requestCode == DIRECCIONES){ //direcciones porque es lo que le hemos pasado en el startactivityforresult como identificador
+            //averiguar si se cerro con exito
+            if (resultCode == RESULT_OK){
+                //averiguar si vuelve con datos
+                if (data != null){
+                    Bundle bundle = data.getExtras();
+                    Direccion direccion = (Direccion) bundle.getSerializable("DIR");
+                    Toast.makeText(this, direccion.toString(), Toast.LENGTH_SHORT);
+                }else{
+                    Toast.makeText(this, "no hay datos", Toast.LENGTH_SHORT).show();
+                }
+            }else{
+                Toast.makeText(this, "cancelada", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void iniciarVista() {
     txtPassword = findViewById(R.id.txtPasswordMain);
     txtEmail = findViewById(R.id.txtEmailMain);
     btnDesencriptar = findViewById(R.id.btnDesencriptarMain);
+    btnCrearDireccion = findViewById(R.id.btnCrearDireccionMain);
     }
 }

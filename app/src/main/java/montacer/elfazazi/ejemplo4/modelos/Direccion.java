@@ -1,6 +1,8 @@
 package montacer.elfazazi.ejemplo4.modelos;
 
-public class Direccion {
+import java.io.Serializable;
+
+public class Direccion implements Serializable {
     private  String calle;
     private  int numero;
     private String ciudad;
@@ -8,9 +10,10 @@ public class Direccion {
     public Direccion() {
     }
 
-    public Direccion(String calle, int numero) {
+    public Direccion(String calle, int numero, String ciudad) {
         this.calle = calle;
         this.numero = numero;
+        this.ciudad = ciudad;
     }
 
     public String getCalle() {
