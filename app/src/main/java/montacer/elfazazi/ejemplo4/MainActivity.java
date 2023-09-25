@@ -1,5 +1,9 @@
 package montacer.elfazazi.ejemplo4;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -19,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     private Button btnDesencriptar;
     private Button btnCrearDireccion;
     private final int DIRECCIONES = 123;
+    private ActivityResultLauncher<Intent> launcherDirecciones;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         iniciarVista();
+        inicializarLauncher();
         btnDesencriptar.setOnClickListener(new View.OnClickListener() { //para cargar la siguiente vista
             @Override
             public void onClick(View view) {
@@ -47,9 +53,35 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(MainActivity.this, CrearDireccionActivity.class  );
                 //empieza actividad y esperar resultado (respuesta)
-                startActivityForResult(intent, DIRECCIONES);
+                //startActivityForResult(intent, DIRECCIONES);
+                launcherDirecciones.launch(intent);
             }
         });
+    }
+
+    private void inicializarLauncher() {
+        //registrar una actividad de retorno con 2 partes
+            //1. como lanzo la actividad hija (igual que el startactivityforresult)
+            //2. que hago cuando la hija termina (igual al onactivityresult)
+
+        launcherDirecciones = registerForActivityResult(
+                new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+                    @Override
+                    public void onActivityResult(ActivityResult result) {
+                        if (result.getResultCode() == RESULT_OK){
+                            if (result.getData() != null){
+                                Bundle bundle = result.getData().getExtras();
+                                Direccion direccion = (Direccion) bundle.getSerializable("DIR");
+                                Toast.makeText(MainActivity.this, direccion.toString(), Toast.LENGTH_SHORT).show();
+                            }else {
+                                Toast.makeText(MainActivity.this, "faltan datos", Toast.LENGTH_SHORT).show();
+                            }
+                        }else{
+                            Toast.makeText(MainActivity.this, "cancelada", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+        );
     }
 
     /**
@@ -71,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
                 if (data != null){
                     Bundle bundle = data.getExtras();
                     Direccion direccion = (Direccion) bundle.getSerializable("DIR");
-                    Toast.makeText(this, direccion.toString(), Toast.LENGTH_SHORT);
+                    Toast.makeText(this, direccion.toString(), Toast.LENGTH_SHORT).show();
                 }else{
                     Toast.makeText(this, "no hay datos", Toast.LENGTH_SHORT).show();
                 }
